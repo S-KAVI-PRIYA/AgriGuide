@@ -1,0 +1,6 @@
+pandas
+chromadb
+sentence-transformers
+google-genai
+openai-whisper
+gTTS

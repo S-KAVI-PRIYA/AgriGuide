@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Agri Guide — an AI agricultural guidance assistant that reads soil and climate data to recommend what to grow.">
+<title>Agri Guide — AI Agricultural Guidance Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="field-noise" aria-hidden="true"></div>
+
+<!-- NAV -->
+<header class="nav">
+  <div class="nav__brand">
+    <span class="nav__mark">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+        <path d="M12 22C12 22 5 18 5 11C5 6 8 3 12 2C16 3 19 6 19 11C19 18 12 22 12 22Z" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M12 22V9" stroke="currentColor" stroke-width="1.6"/>
+      </svg>
+    </span>
+    Agri&nbsp;Guide
+  </div>
+  <nav class="nav__links">
+    <a href="#ask">Ask</a>
+    <a href="#how">How it works</a>
+    <a href="#dataset">Dataset</a>
+  </nav>
+  <a href="#ask" class="btn btn--ghost nav__cta">Start asking</a>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero__copy">
+    <p class="eyebrow">Agri Guide · AI Agricultural Guidance Assistant</p>
+    <h1 class="hero__title">
+      Know what<br>
+      to plant<span class="dot">.</span><br>
+      before you plant it<span class="dot">.</span>
+    </h1>
+    <p class="hero__sub">
+      Agri Guide reads soil N‑P‑K, temperature, humidity, pH and rainfall
+      against thousands of real growing records — and reaches the open web
+      when the answer lives outside the field.
+    </p>
+    <div class="hero__actions">
+      <a href="#ask" class="btn btn--primary">Ask about your crop</a>
+      <a href="#how" class="btn btn--text">See how it reasons →</a>
+    </div>
+    <div class="hero__stat-row">
+      <div class="stat"><span class="stat__num">22</span><span class="stat__label">crop varieties indexed</span></div>
+      <div class="stat"><span class="stat__num">6</span><span class="stat__label">soil &amp; climate signals</span></div>
+      <div class="stat"><span class="stat__num">2</span><span class="stat__label">sources: dataset + live web</span></div>
+    </div>
+  </div>
+
+  <div class="hero__field" aria-hidden="true">
+    <svg class="field-svg" viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#EDE6D0"/>
+          <stop offset="1" stop-color="#F6F1E4"/>
+        </linearGradient>
+      </defs>
+      <rect x="0" y="0" width="520" height="420" fill="url(#sky)" rx="28"/>
+      <circle cx="430" cy="70" r="46" fill="#D9C27E" opacity="0.55"/>
+      <g id="rows"></g>
+    </svg>
+  </div>
+</section>
+
+<!-- SOIL DATA TICKER (signature element) -->
+<section class="ticker" aria-label="Sample soil and climate readings from the dataset">
+  <div class="ticker__track" id="tickerTrack"></div>
+</section>
+
+<!-- ASK / CHAT -->
+<section class="ask" id="ask">
+  <div class="ask__intro">
+    <p class="eyebrow">Ask anything</p>
+    <h2>Talk to the field.</h2>
+    <p class="ask__sub">Ask about ideal N‑P‑K for a crop, soil pH ranges, rainfall needs — or anything else in farming. Agri Guide routes each question to the dataset or the live web automatically.</p>
+    <div class="chip-row" id="suggestions">
+      <button class="chip" type="button">What NPK levels suit rice?</button>
+      <button class="chip" type="button">Ideal soil pH for cotton?</button>
+      <button class="chip" type="button">Current wheat prices in India</button>
+      <button class="chip" type="button">Rainfall needed for banana?</button>
+    </div>
+  </div>
+
+  <div class="chat-card">
+    <div class="chat-card__header">
+      <span class="chat-card__status" id="statusDot"></span>
+      <span id="statusText">Checking backend…</span>
+    </div>
+
+    <div class="chat-log" id="chatLog">
+      <div class="msg msg--bot">
+        <div class="msg__avatar">🌾</div>
+        <div class="msg__bubble">
+          Hi, I'm Agri Guide. Ask me about a crop's ideal soil and climate
+          conditions, or any farming question — I'll pull from the crop
+          dataset or search the web when I need to.
+        </div>
+      </div>
+    </div>
+
+    <form class="chat-input" id="chatForm">
+      <button type="button" class="mic-btn" id="micBtn" title="Ask by voice" aria-label="Ask by voice">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z" stroke="currentColor" stroke-width="1.6"/><path d="M19 11a7 7 0 0 1-14 0M12 18v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <input type="text" id="chatInput" placeholder="e.g. What conditions does maize need?" autocomplete="off">
+      <button type="submit" class="btn btn--primary send-btn">
+        <span>Ask</span>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none"><path d="M4 12h16M13 5l7 7-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </form>
+    <p class="chat-hint" id="chatHint">Source is shown under each answer — dataset or web.</p>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <p class="eyebrow">Under the hood</p>
+  <h2>Two ways an answer can grow.</h2>
+  <div class="how__grid">
+    <div class="how__card">
+      <span class="how__tag">Path A</span>
+      <h3>Rooted in the dataset</h3>
+      <p>Your question is embedded and matched against real crop
+      records — nitrogen, phosphorus, potassium, temperature, humidity,
+      pH and rainfall — using semantic search over the local vector store.</p>
+      <ol class="how__steps">
+        <li>Question embedded with MiniLM</li>
+        <li>Nearest growing conditions retrieved from ChromaDB</li>
+        <li>Gemini reasons only over that retrieved context</li>
+      </ol>
+    </div>
+    <div class="how__card">
+      <span class="how__tag">Path B</span>
+      <h3>Branches out to the web</h3>
+      <p>Questions outside the dataset — prices, news, general
+      agronomy — are routed to live Google Search grounding, with a
+      DuckDuckGo fallback if that's unavailable.</p>
+      <ol class="how__steps">
+        <li>Router decides DATASET vs WEB</li>
+        <li>Gemini + Search grounding fetches current info</li>
+        <li>Falls back to free web search if quota is hit</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- DATASET -->
+<section class="dataset" id="dataset">
+  <div class="dataset__copy">
+    <p class="eyebrow">The soil beneath it</p>
+    <h2>Built on Crop_recommendation.csv</h2>
+    <p>Every recommendation traces back to real agronomic records — the
+    same six signals a farmer would check before choosing what to sow.</p>
+  </div>
+  <div class="dataset__signals">
+    <div class="signal"><span>N</span>Nitrogen</div>
+    <div class="signal"><span>P</span>Phosphorus</div>
+    <div class="signal"><span>K</span>Potassium</div>
+    <div class="signal"><span>°C</span>Temperature</div>
+    <div class="signal"><span>%</span>Humidity</div>
+    <div class="signal"><span>pH</span>Soil pH</div>
+    <div class="signal"><span>mm</span>Rainfall</div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div>🌾 Agri Guide — grown from data, watered by search.</div>
+  <div class="footer__note">Answers may draw on external sources; verify before field decisions.</div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
